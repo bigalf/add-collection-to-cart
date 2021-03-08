@@ -1,0 +1,46 @@
+{% assign image = product.images[0] %}
+<div class="item">
+  <a href="{{ product.url }}">
+    <div class="inner" style="background-image: url({{ image | img_url: 'grande' }})"></div>
+    <div class="overlay"></div>
+    <h3>
+      {% assign title = product.title | split: ': ' | join: ', ' %}
+      <span class="product-title">{{ title }}</span>
+      
+      {% comment %}
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% if product.handle != 'gift-voucher' %}
+        {{ variant.price | times:1.2 | money }}
+      {% endif %}
+      {% endcomment %}
+
+      
+      {% if product.handle contains 'voucher' %}
+      	
+       {% if product.price_max > product.price %}
+       {{ product.price_min | money }} - {{ product.price_max | money }}
+       {% else %}
+       {{ product.price | money}}
+       {% endif %}
+      
+      {% else %} 
+      
+       {% if product.price_max > product.price %}
+       {{ product.price_min | times:1.2 | money }} - {{ product.price_max | times:1.2 | money }}
+       {% else %}
+       {{ product.price | times:1.2 | money}}
+       {% endif %}
+      
+      <!-- Added to support compare-at variants 2017-09-19 -->
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% if variant.compare_at_price > variant.price %}
+      <span class="compare_at_price" style="text-decoration: line-through;">
+        {{ variant.compare_at_price | times:1.2 | money }}
+      </span>
+      {% endif %}
+      
+     {% endif %}
+      
+    </h3>
+  </a>
+</div>

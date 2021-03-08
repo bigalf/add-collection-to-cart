@@ -1,0 +1,105 @@
+<div class="swiper-container gallery-top">
+    <div class="swiper-wrapper">
+      {% for product in collections[section.settings.collection-s].products %}
+      	<div class="swiper-slide" style="background-image:url({{ product.featured_image | img_url: '1800x'}})">
+          {{ product.title }}
+      </div>
+  	  {% endfor%}  
+  	</div>
+    <!-- Add Arrows -->
+    <div class="swiper-button-next swiper-button-white"></div>
+    <div class="swiper-button-prev swiper-button-white"></div>
+  </div>
+  <div class="swiper-container gallery-thumbs">
+    <div class="swiper-wrapper">
+            {% for product in collections[section.settings.collection-s].products %}
+      <div class="swiper-slide" style="background-image:url({{ product.featured_image | img_url: '400x400'}})">{{ product.title }}</div>
+      {% endfor %}
+    </div>
+  </div>
+
+<style>
+  .swiper-container {
+      width: 100%;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .swiper-slide {
+      background-size: cover;
+      background-position: center;
+      height: 60vh;
+    }
+
+    .gallery-top {
+      height: 80%;
+      width: 100%;
+    }
+
+    .gallery-thumbs {
+      max-height: 400px;
+      box-sizing: border-box;
+      padding: 10px 0;
+    }
+
+    .gallery-thumbs .swiper-slide {
+      height: 100%;
+      opacity: 0.4;
+    }
+
+    .gallery-thumbs .swiper-slide-thumb-active {
+      opacity: 1;
+    }
+</style>
+
+  <script>
+    var galleryThumbs = new Swiper('.gallery-thumbs', {
+      spaceBetween: 10,
+      slidesPerView: 3,
+      loop: true, 
+      freeMode: false,
+      loopedSlides: 3, //looped slides should be the same
+      watchSlidesVisibility: true,
+      watchSlidesProgress: true,
+    });
+    var galleryTop = new Swiper('.gallery-top', {
+      spaceBetween: 10,
+      loop: false,
+      loopedSlides: 3, //looped slides should be the same
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      thumbs: {
+        swiper: galleryThumbs,
+      },
+    });
+  </script>
+
+{% schema %}
+  {
+    "name": "Section name",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection-s",
+        "label": "Collection Selector"
+      }
+	],
+
+    "presets" : [
+        {
+            "category": "Alfie",
+            "name": "Collection Slider"
+        }
+    ]
+
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

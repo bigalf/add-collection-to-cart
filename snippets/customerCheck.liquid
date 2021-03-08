@@ -1,0 +1,8 @@
+{% if customer %}
+	{% assign registeredCustomer = false %}
+	{% if customer.tags contains 'registered' %}
+          {% assign registeredCustomer = true %}
+      {% elsif customer.tags contains 'register' %}
+          {% assign energiecustomer = false %}
+      {% endif %}
+{% endif %}

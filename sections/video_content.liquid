@@ -1,0 +1,54 @@
+ 
+{% if customer.tags == blank %}
+Please Purchase a Pro Subscription to continue.
+{% elsif customer.tags contains 'pro' %}
+{{ page.content }}
+{% elsif customer.tags contains 'expert' %}
+{{ page.content }}
+{% endif %}
+
+
+
+
+{% schema %}
+  {
+    "name": "Video Section",
+    "settings": [
+	
+	],
+  "blocks": [
+    {
+      "type": "select",
+      "name": "Add Video",
+      "settings": [
+        {
+           "type": "select",
+           "id": "pro_expert",
+           "options": [
+              { "value": "Pro", "label": "Pro"},
+              { "value": "Expert", "label": "Expert"}
+           ],
+           "label": "Vertical alignment"
+        },
+		{
+          "id": "video_url",
+          "type": "url",
+          "label": "Banner button link"
+        },
+		{
+           "type": "text",
+           "id": "text",
+           "default": "Quick links",
+           "label": "Heading"
+        }
+      ]
+    }
+  ]	
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

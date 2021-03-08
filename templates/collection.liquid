@@ -1,0 +1,64 @@
+{% if collection.image %}
+  <div class="collection-container">
+    <div class="container clearfix">
+      <div class="twelve columns">
+        <div class="hero" style="background-image: url({{ collection.image | img_url: '2048x2048' }})"></div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<div class="container clearfix">
+  <div class="twelve columns">
+    {% include 'collection-title' %}
+    {% if collection.description %}
+      <div class="collection-description">
+        {{ collection.description }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="container clearfix items items--collection">
+  {% paginate collection.products by 10 %}
+  {% for product in collection.products %}
+    {% include 'product' %}
+      {% for variant in product.variants %}
+    	{{ variant.id }}
+  	{% endfor %}
+  {% endfor %}
+<button onclick="myFunction()">Click me</button>
+
+<div class="pagination-buttons">
+  {{ paginate | default_pagination: next: 'Older', previous: 'Newer' }}
+  </div>
+  {%- endpaginate -%}
+</div>
+
+<script>
+function myFunction() {
+let formData = {
+ 'items': [
+   {
+   'id': {{ variant.id }},
+   'quantity': 1
+  }
+ ]
+};
+
+fetch('/cart/add.js', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(formData)
+})
+.then(response => {
+  return response.json();
+  
+})
+.catch((error) => {
+  console.error('Error:', error);
+});
+}
+</script>

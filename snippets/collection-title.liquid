@@ -1,0 +1,22 @@
+{% assign titles = 'Prayer ùrnaigh, Eternity sìorrachd, Trinity trianaid, Land tìr, Sea muir, Sky iarmailt, Stone càrn' | split: ', ' %}
+{% if collection.image %}
+  <h1>
+    {{ collection.title }}
+    {% for title in titles %}
+      {% if title contains collection.title %}
+        {% assign gaelic = title | split: ' ' %}
+        <div class="gaelic">{{ gaelic[1] }}</div>
+      {% endif %}
+    {% endfor %}
+  </h1>
+{% else %}
+  <h1 class="h1--spacing">
+    {{ collection.title }}
+    {% for title in titles %}
+      {% if title contains collection.title %}
+        {% assign gaelic = title | split: ' ' %}
+        <div class="gaelic">{{ gaelic[1] }}</div>
+      {% endif %}
+    {% endfor %}
+  </h1>
+{% endif %}
