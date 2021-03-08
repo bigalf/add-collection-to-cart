@@ -1,0 +1,12 @@
+  {% for order in customer.orders %}
+  	{%- for line_item in order.line_items -%}
+  {% for tags in line_item %}
+  	{{ tags }}
+  {% endfor %}
+  		{% if line_item.sku contains "subscription" %}
+  			Video		
+  {% else %}
+  			Nothing In Here
+  		{% endif %}
+  	{% endfor %}
+  {% endfor %}
