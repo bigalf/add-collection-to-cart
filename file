@@ -1,0 +1,125 @@
+{% if collection.image %}
+  <div class="collection-container">
+    <div class="container clearfix">
+      <div class="twelve columns">
+        <div class="hero" style="background-image: url({{ collection.image | img_url: '2048x2048' }})"></div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<div class="container clearfix">
+  <div class="twelve columns">
+    {% include 'collection-title' %}
+    {% if collection.description %}
+      <div class="collection-description">
+        {{ collection.description }}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="container clearfix items items--collection">
+  {% paginate collection.products by 10 %}
+  {% for product in collection.products %}
+    {% assign image = product.images[0] %}
+<div class="item">
+  <a>
+    <div class="inner" style="background-image: url({{ image | img_url: 'grande' }})"></div>
+    <div class="overlay"></div>
+    <h3>
+      {% assign title = product.title | split: ': ' | join: ', ' %}
+      <span class="product-title">{{ title }}</span>
+      
+      {% comment %}
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% if product.handle != 'gift-voucher' %}
+        {{ variant.price | times:1.2 | money }}
+      {% endif %}
+      {% endcomment %}
+
+      
+      {% if product.handle contains 'voucher' %}
+      	
+       {% if product.price_max > product.price %}
+       {{ product.price_min | money }} - {{ product.price_max | money }}
+       {% else %}
+       {{ product.price | money}}
+       {% endif %}
+      
+      {% else %} 
+      
+       {% if product.price_max > product.price %}
+       {{ product.price_min | times:1.2 | money }} - {{ product.price_max | times:1.2 | money }}
+       {% else %}
+       {{ product.price | times:1.2 | money}}
+       {% endif %}
+      
+      <!-- Added to support compare-at variants 2017-09-19 -->
+            <select name="id" id="ProductSelect-{{ section.id }}">
+              {% for variant in product.variants %}
+                <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} {% unless variant.available %} disabled="disabled" {% endunless %} value="{{ variant.id }}" data-sku="{{ variant.sku }}">
+                  {{ variant.title }} - {% if variant.available %}{{ variant.price | money_with_currency }}{% else %}{{ 'products.product.sold_out' | t }}{% endif %}
+              </option>
+              {% endfor %}
+            </select>
+      {% assign variant = product.selected_or_first_available_variant %}
+      {% if variant.compare_at_price > variant.price %}
+      <span class="compare_at_price" style="text-decoration: line-through;">
+        {{ variant.compare_at_price | times:1.2 | money }}
+      </span>
+      {% endif %}
+      
+     {% endif %}
+      
+    </h3>
+  </a>
+</div>
+ 
+  {% endfor %}
+{%- capture variant_loop -%}
+	{% for product in collection.products %}
+		{% for variant in product.variants %}
+			{% if variant == product.selected_or_first_available_variant %}
+              {
+              'id': {{ variant.id }},
+              'quantity': 1
+              },
+			{% endif %}
+	{% endfor %}
+  {% endfor %}
+{%- endcapture -%}
+<button class="btn btn--add-to-cart" onclick="myFunction()">
+  <span class="btn__text">{{ 'products.product.add_to_cart' | t }}</span>
+</button>
+
+<div class="pagination-buttons">
+  {{ paginate | default_pagination: next: 'Older', previous: 'Newer' }}
+  </div>
+  {%- endpaginate -%}
+</div>
+
+
+
+<script>
+  function myFunction() {
+    let formData = {
+      'items': [
+        {{ variant_loop }}
+      ]
+    };
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      return response.json();
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+  </script>
